@@ -1,0 +1,1837 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <meta name="theme-color" content="#070b14" />
+  <title>M2 CRM v3.0 Premium</title>
+  <style>
+    :root {
+      --bg: #070b14;
+      --panel: rgba(15, 23, 42, 0.78);
+      --panel-solid: #0f172a;
+      --panel-2: rgba(30, 41, 59, 0.78);
+      --text: #f8fafc;
+      --muted: #94a3b8;
+      --border: rgba(148, 163, 184, 0.22);
+      --primary: #38bdf8;
+      --primary-2: #0ea5e9;
+      --good: #22c55e;
+      --warn: #f59e0b;
+      --bad: #ef4444;
+      --purple: #a855f7;
+      --shadow: 0 24px 80px rgba(0, 0, 0, 0.35);
+      --radius: 22px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background:
+        radial-gradient(circle at top left, rgba(56, 189, 248, 0.18), transparent 35%),
+        radial-gradient(circle at top right, rgba(168, 85, 247, 0.13), transparent 35%),
+        linear-gradient(180deg, #070b14 0%, #0f172a 100%);
+      color: var(--text);
+    }
+
+    button,
+    input,
+    select,
+    textarea {
+      font: inherit;
+    }
+
+    button {
+      border: 0;
+      cursor: pointer;
+    }
+
+    .app {
+      max-width: 1500px;
+      margin: 0 auto;
+      padding: 20px 18px 100px;
+    }
+
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 40;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      padding: 14px 0 18px;
+      backdrop-filter: blur(18px);
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .logo {
+      width: 48px;
+      height: 48px;
+      display: grid;
+      place-items: center;
+      border-radius: 16px;
+      background: linear-gradient(135deg, var(--primary), var(--purple));
+      color: #020617;
+      font-weight: 950;
+      letter-spacing: -0.05em;
+      box-shadow: 0 14px 40px rgba(56, 189, 248, 0.25);
+    }
+
+    .brand h1 {
+      margin: 0;
+      font-size: clamp(1.1rem, 2.4vw, 1.85rem);
+      line-height: 1.05;
+      letter-spacing: -0.045em;
+    }
+
+    .brand p {
+      margin: 3px 0 0;
+      color: var(--muted);
+      font-size: 0.86rem;
+    }
+
+    .top-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+
+    .btn {
+      min-height: 42px;
+      padding: 0 14px;
+      border-radius: 999px;
+      background: rgba(15, 23, 42, 0.8);
+      color: var(--text);
+      border: 1px solid var(--border);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: transform 0.18s ease, border-color 0.18s ease, background 0.18s ease;
+      white-space: nowrap;
+    }
+
+    .btn:hover {
+      transform: translateY(-1px);
+      border-color: rgba(56, 189, 248, 0.65);
+      background: rgba(30, 41, 59, 0.9);
+    }
+
+    .btn.primary {
+      background: linear-gradient(135deg, var(--primary), var(--primary-2));
+      color: #020617;
+      border-color: transparent;
+      font-weight: 850;
+    }
+
+    .btn.good {
+      background: rgba(34, 197, 94, 0.16);
+      border-color: rgba(34, 197, 94, 0.35);
+      color: #bbf7d0;
+    }
+
+    .btn.bad {
+      background: rgba(239, 68, 68, 0.14);
+      border-color: rgba(239, 68, 68, 0.35);
+      color: #fecaca;
+    }
+
+    .btn.small {
+      min-height: 34px;
+      padding: 0 11px;
+      font-size: 0.84rem;
+    }
+
+    .grid {
+      display: grid;
+      gap: 16px;
+    }
+
+    .dashboard {
+      grid-template-columns: repeat(7, minmax(145px, 1fr));
+      margin-bottom: 18px;
+    }
+
+    .stat {
+      position: relative;
+      overflow: hidden;
+      min-height: 108px;
+      padding: 17px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      background: var(--panel);
+      box-shadow: var(--shadow);
+    }
+
+    .stat::before {
+      content: "";
+      position: absolute;
+      inset: auto -30% -55% auto;
+      width: 120px;
+      height: 120px;
+      background: rgba(56, 189, 248, 0.1);
+      border-radius: 999px;
+    }
+
+    .stat .label {
+      color: var(--muted);
+      font-size: 0.78rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    .stat .value {
+      margin-top: 8px;
+      font-size: 2rem;
+      font-weight: 950;
+      letter-spacing: -0.07em;
+    }
+
+    .main-layout {
+      display: grid;
+      grid-template-columns: minmax(340px, 440px) 1fr;
+      gap: 16px;
+      align-items: start;
+    }
+
+    .panel {
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      background: var(--panel);
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(18px);
+    }
+
+    .panel-header {
+      padding: 18px 18px 0;
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: center;
+    }
+
+    .panel-header h2 {
+      margin: 0;
+      font-size: 1.05rem;
+      letter-spacing: -0.03em;
+    }
+
+    .panel-body {
+      padding: 18px;
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .field.full {
+      grid-column: 1 / -1;
+    }
+
+    label {
+      display: block;
+      color: var(--muted);
+      font-size: 0.76rem;
+      margin: 0 0 6px;
+      letter-spacing: 0.025em;
+    }
+
+    input,
+    select,
+    textarea {
+      width: 100%;
+      min-height: 42px;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      background: rgba(2, 6, 23, 0.45);
+      color: var(--text);
+      outline: none;
+      padding: 10px 12px;
+      transition: border-color 0.16s ease, box-shadow 0.16s ease;
+    }
+
+    textarea {
+      min-height: 86px;
+      resize: vertical;
+    }
+
+    input:focus,
+    select:focus,
+    textarea:focus {
+      border-color: rgba(56, 189, 248, 0.8);
+      box-shadow: 0 0 0 4px rgba(56, 189, 248, 0.1);
+    }
+
+    select option {
+      background: #0f172a;
+      color: var(--text);
+    }
+
+    .form-actions {
+      display: flex;
+      gap: 10px;
+      margin-top: 14px;
+      flex-wrap: wrap;
+    }
+
+    .controls {
+      display: grid;
+      grid-template-columns: 1.6fr repeat(4, minmax(130px, 1fr));
+      gap: 10px;
+      margin-bottom: 14px;
+    }
+
+    .quick-filters {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-bottom: 14px;
+    }
+
+    .chip {
+      min-height: 34px;
+      padding: 0 11px;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      background: rgba(15, 23, 42, 0.66);
+      color: var(--muted);
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .chip.active {
+      border-color: rgba(56, 189, 248, 0.65);
+      color: #e0f2fe;
+      background: rgba(14, 165, 233, 0.14);
+    }
+
+    .pipeline {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(120px, 1fr));
+      gap: 10px;
+      margin-bottom: 14px;
+    }
+
+    .pipe {
+      padding: 12px;
+      border-radius: 18px;
+      border: 1px solid var(--border);
+      background: rgba(2, 6, 23, 0.35);
+    }
+
+    .pipe span {
+      display: block;
+      color: var(--muted);
+      font-size: 0.74rem;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .pipe strong {
+      display: block;
+      margin-top: 5px;
+      font-size: 1.35rem;
+      letter-spacing: -0.05em;
+    }
+
+    .lead-list {
+      display: grid;
+      gap: 12px;
+    }
+
+    .lead-card {
+      position: relative;
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      background: linear-gradient(180deg, rgba(15, 23, 42, 0.82), rgba(2, 6, 23, 0.42));
+      padding: 14px;
+      transition: transform 0.16s ease, border-color 0.16s ease;
+    }
+
+    .lead-card:hover {
+      transform: translateY(-1px);
+      border-color: rgba(56, 189, 248, 0.45);
+    }
+
+    .lead-top {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: flex-start;
+    }
+
+    .lead-card h3 {
+      margin: 0;
+      font-size: 1.03rem;
+      letter-spacing: -0.03em;
+    }
+
+    .lead-meta {
+      margin-top: 5px;
+      color: var(--muted);
+      font-size: 0.85rem;
+      line-height: 1.35;
+    }
+
+    .badges {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 7px;
+      margin-top: 10px;
+    }
+
+    .badge {
+      padding: 5px 8px;
+      border-radius: 999px;
+      background: rgba(148, 163, 184, 0.12);
+      border: 1px solid rgba(148, 163, 184, 0.18);
+      color: #cbd5e1;
+      font-size: 0.75rem;
+    }
+
+    .badge.good {
+      background: rgba(34, 197, 94, 0.13);
+      border-color: rgba(34, 197, 94, 0.25);
+      color: #bbf7d0;
+    }
+
+    .badge.warn {
+      background: rgba(245, 158, 11, 0.13);
+      border-color: rgba(245, 158, 11, 0.28);
+      color: #fde68a;
+    }
+
+    .badge.bad {
+      background: rgba(239, 68, 68, 0.13);
+      border-color: rgba(239, 68, 68, 0.26);
+      color: #fecaca;
+    }
+
+    .score {
+      text-align: right;
+      min-width: 84px;
+    }
+
+    .score strong {
+      display: block;
+      font-size: 1.45rem;
+      letter-spacing: -0.06em;
+    }
+
+    .score span {
+      font-size: 0.76rem;
+      color: var(--muted);
+    }
+
+    .card-actions {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-top: 12px;
+    }
+
+    .dispositions {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(105px, 1fr));
+      gap: 10px;
+      margin-bottom: 16px;
+    }
+
+    .disp-btn {
+      min-height: 78px;
+      padding: 11px 9px;
+      border-radius: 18px;
+      border: 1px solid var(--border);
+      background: rgba(2, 6, 23, 0.38);
+      color: var(--text);
+      display: grid;
+      gap: 4px;
+      place-items: center;
+      text-align: center;
+      transition: transform 0.16s ease, border-color 0.16s ease, background 0.16s ease;
+    }
+
+    .disp-btn:hover {
+      transform: translateY(-1px);
+      border-color: rgba(56, 189, 248, 0.55);
+      background: rgba(14, 165, 233, 0.1);
+    }
+
+    .disp-btn .icon {
+      font-size: 1.35rem;
+    }
+
+    .disp-btn .txt {
+      font-size: 0.76rem;
+      color: #dbeafe;
+      line-height: 1.12;
+    }
+
+    .empty {
+      padding: 32px 18px;
+      text-align: center;
+      color: var(--muted);
+      border: 1px dashed var(--border);
+      border-radius: 20px;
+    }
+
+    .drawer-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(2, 6, 23, 0.64);
+      z-index: 80;
+      display: none;
+    }
+
+    .drawer-backdrop.show {
+      display: block;
+    }
+
+    .drawer {
+      position: fixed;
+      inset: 0 0 0 auto;
+      width: min(620px, 94vw);
+      background: #0b1120;
+      border-left: 1px solid var(--border);
+      z-index: 90;
+      transform: translateX(105%);
+      transition: transform 0.24s ease;
+      overflow: auto;
+      box-shadow: -30px 0 90px rgba(0, 0, 0, 0.45);
+    }
+
+    .drawer.show {
+      transform: translateX(0);
+    }
+
+    .drawer-inner {
+      padding: 20px;
+    }
+
+    .detail-title {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 14px;
+      margin-bottom: 16px;
+    }
+
+    .detail-title h2 {
+      margin: 0;
+      letter-spacing: -0.05em;
+    }
+
+    .detail-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    .detail-box {
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 12px;
+      background: rgba(15, 23, 42, 0.65);
+    }
+
+    .detail-box span {
+      display: block;
+      font-size: 0.72rem;
+      color: var(--muted);
+      margin-bottom: 4px;
+    }
+
+    .detail-box strong {
+      overflow-wrap: anywhere;
+    }
+
+    .timeline {
+      display: grid;
+      gap: 10px;
+      margin-top: 12px;
+    }
+
+    .timeline-item {
+      border-left: 3px solid rgba(56, 189, 248, 0.6);
+      padding: 7px 0 7px 12px;
+      color: #dbeafe;
+    }
+
+    .timeline-item small {
+      display: block;
+      color: var(--muted);
+      margin-top: 3px;
+    }
+
+    .toast-wrap {
+      position: fixed;
+      right: 16px;
+      bottom: 92px;
+      z-index: 120;
+      display: grid;
+      gap: 10px;
+    }
+
+    .toast {
+      min-width: 230px;
+      max-width: 340px;
+      padding: 13px 14px;
+      border-radius: 16px;
+      background: rgba(15, 23, 42, 0.95);
+      border: 1px solid rgba(56, 189, 248, 0.35);
+      color: var(--text);
+      box-shadow: var(--shadow);
+      animation: toastIn 0.24s ease both;
+    }
+
+    @keyframes toastIn {
+      from {
+        opacity: 0;
+        transform: translateY(8px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .bottom-nav {
+      position: fixed;
+      left: 12px;
+      right: 12px;
+      bottom: 12px;
+      z-index: 50;
+      display: none;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
+      padding: 9px;
+      border-radius: 24px;
+      border: 1px solid var(--border);
+      background: rgba(15, 23, 42, 0.88);
+      backdrop-filter: blur(18px);
+      box-shadow: var(--shadow);
+    }
+
+    .bottom-nav a {
+      color: var(--muted);
+      text-decoration: none;
+      text-align: center;
+      padding: 8px 4px;
+      border-radius: 16px;
+      font-size: 0.76rem;
+    }
+
+    .bottom-nav a:hover {
+      color: var(--text);
+      background: rgba(56, 189, 248, 0.1);
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    @media (max-width: 1180px) {
+      .dashboard {
+        grid-template-columns: repeat(3, 1fr);
+      }
+
+      .main-layout {
+        grid-template-columns: 1fr;
+      }
+
+      .controls {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .pipeline {
+        grid-template-columns: repeat(3, 1fr);
+      }
+
+      .dispositions {
+        grid-template-columns: repeat(4, 1fr);
+      }
+    }
+
+    @media (max-width: 720px) {
+      .app {
+        padding: 14px 12px 110px;
+      }
+
+      .topbar {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+
+      .top-actions {
+        width: 100%;
+        justify-content: flex-start;
+      }
+
+      .dashboard {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .stat {
+        min-height: 96px;
+      }
+
+      .stat .value {
+        font-size: 1.55rem;
+      }
+
+      .form-grid,
+      .detail-grid,
+      .controls {
+        grid-template-columns: 1fr;
+      }
+
+      .pipeline {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .dispositions {
+        grid-template-columns: repeat(3, 1fr);
+      }
+
+      .disp-btn {
+        min-height: 72px;
+      }
+
+      .bottom-nav {
+        display: grid;
+      }
+    }
+
+    @media (max-width: 430px) {
+      .dashboard {
+        grid-template-columns: 1fr;
+      }
+
+      .pipeline {
+        grid-template-columns: 1fr;
+      }
+
+      .dispositions {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="app">
+    <header class="topbar">
+      <div class="brand">
+        <div class="logo">M2</div>
+        <div>
+          <h1>M2 CRM v3.0 Premium</h1>
+          <p>Solar • HVAC • Mini Splits • Rebate Sales</p>
+        </div>
+      </div>
+
+      <div class="top-actions">
+        <button class="btn small" id="saveNowBtn">💾 Save Now</button>
+        <button class="btn small" id="exportJsonBtn">⬇️ Export Backup</button>
+        <label class="btn small" for="importJsonInput">⬆️ Import Backup</label>
+        <input class="hidden" id="importJsonInput" type="file" accept="application/json" />
+        <button class="btn small" id="exportCsvBtn">📊 Export CSV</button>
+        <button class="btn small bad" id="resetBtn">🧹 Reset Demo</button>
+      </div>
+    </header>
+
+    <section class="grid dashboard" id="dashboard"></section>
+
+    <main class="main-layout">
+      <aside class="panel" id="accounts">
+        <div class="panel-header">
+          <h2>Customer Accounts</h2>
+          <span class="badge" id="lastSavedBadge">Last saved: never</span>
+        </div>
+
+        <div class="panel-body">
+          <form id="leadForm">
+            <input type="hidden" id="leadId" />
+
+            <div class="form-grid">
+              <div class="field">
+                <label for="fullName">Full Name</label>
+                <input id="fullName" placeholder="Example: Maria Johnson" required />
+              </div>
+
+              <div class="field">
+                <label for="phone">Phone</label>
+                <input id="phone" placeholder="(718) 555-1212" />
+              </div>
+
+              <div class="field">
+                <label for="email">Email</label>
+                <input id="email" type="email" placeholder="customer@email.com" />
+              </div>
+
+              <div class="field">
+                <label for="borough">Borough / City</label>
+                <input id="borough" placeholder="Queens, Brooklyn, Long Island..." />
+              </div>
+
+              <div class="field full">
+                <label for="address">Address</label>
+                <input id="address" placeholder="123 Main Street" />
+              </div>
+
+              <div class="field">
+                <label for="homeownerStatus">Homeowner Status</label>
+                <select id="homeownerStatus">
+                  <option>Unknown</option>
+                  <option>Homeowner</option>
+                  <option>Renter</option>
+                  <option>Decision Maker</option>
+                  <option>Needs Spouse Approval</option>
+                </select>
+              </div>
+
+              <div class="field">
+                <label for="utilityCompany">Utility Company</label>
+                <input id="utilityCompany" placeholder="Con Edison, PSEG..." />
+              </div>
+
+              <div class="field">
+                <label for="averageBill">Average Electric Bill</label>
+                <input id="averageBill" type="number" min="0" placeholder="250" />
+              </div>
+
+              <div class="field">
+                <label for="heatingType">Heating Type</label>
+                <select id="heatingType">
+                  <option>Unknown</option>
+                  <option>Gas Heating</option>
+                  <option>Oil Heating</option>
+                  <option>Electric Heating</option>
+                  <option>No Boiler</option>
+                </select>
+              </div>
+
+              <div class="field">
+                <label for="boilerStatus">Boiler Status</label>
+                <select id="boilerStatus">
+                  <option>Unknown</option>
+                  <option>Has Boiler</option>
+                  <option>Old Boiler</option>
+                  <option>Wants Boiler Removed</option>
+                  <option>No Boiler</option>
+                </select>
+              </div>
+
+              <div class="field">
+                <label for="solarStatus">Solar Status</label>
+                <select id="solarStatus">
+                  <option>Unknown</option>
+                  <option>No Solar</option>
+                  <option>Has Solar</option>
+                  <option>Interested in Solar</option>
+                  <option>Not Interested</option>
+                  <option>Already Under Contract</option>
+                  <option>Needs Roof Check</option>
+                  <option>Needs Bill Review</option>
+                </select>
+              </div>
+
+              <div class="field">
+                <label for="hvacInterest">HVAC / Mini Split Interest</label>
+                <select id="hvacInterest">
+                  <option>Unknown</option>
+                  <option>Interested in HVAC</option>
+                  <option>Interested in Mini Split</option>
+                  <option>Needs HVAC</option>
+                  <option>Needs Mini Split</option>
+                  <option>Not Interested</option>
+                </select>
+              </div>
+
+              <div class="field">
+                <label for="rebateInterest">Rebate Interest</label>
+                <select id="rebateInterest">
+                  <option>Unknown</option>
+                  <option>Interested</option>
+                  <option>Very Interested</option>
+                  <option>Needs Explanation</option>
+                  <option>Not Interested</option>
+                </select>
+              </div>
+
+              <div class="field">
+                <label for="pipelineStage">Pipeline Stage</label>
+                <select id="pipelineStage">
+                  <option>New Lead</option>
+                  <option>Contacted</option>
+                  <option>Appointment Set</option>
+                  <option>Estimate Completed</option>
+                  <option>Proposal Sent</option>
+                  <option>Closed Won</option>
+                  <option>Closed Lost</option>
+                  <option>Follow Up Later</option>
+                  <option>Not Qualified</option>
+                </select>
+              </div>
+
+              <div class="field">
+                <label for="leadStatus">Lead Status</label>
+                <select id="leadStatus">
+                  <option>New</option>
+                  <option>Hot</option>
+                  <option>Warm</option>
+                  <option>Cold</option>
+                  <option>Appointment Set</option>
+                  <option>Follow Up</option>
+                  <option>Closed Won</option>
+                  <option>Closed Lost</option>
+                  <option>Do Not Knock</option>
+                  <option>Not Qualified</option>
+                </select>
+              </div>
+
+              <div class="field">
+                <label for="appointmentDate">Appointment Date</label>
+                <input id="appointmentDate" type="date" />
+              </div>
+
+              <div class="field">
+                <label for="appointmentTime">Appointment Time</label>
+                <input id="appointmentTime" type="time" />
+              </div>
+
+              <div class="field">
+                <label for="assignedAgent">Assigned Agent</label>
+                <input id="assignedAgent" placeholder="Agent name" />
+              </div>
+
+              <div class="field">
+                <label for="lastContactDate">Last Contact Date</label>
+                <input id="lastContactDate" type="date" />
+              </div>
+
+              <div class="field">
+                <label for="nextFollowUpDate">Next Follow-Up Date</label>
+                <input id="nextFollowUpDate" type="date" />
+              </div>
+
+              <div class="field">
+                <label for="billUpload">Utility Bill Upload</label>
+                <input id="billUpload" type="file" accept=".pdf,.png,.jpg,.jpeg,.heic,.webp" />
+              </div>
+
+              <div class="field full">
+                <label for="notes">Main Notes</label>
+                <textarea id="notes" placeholder="Customer pain points, objection, what they care about..."></textarea>
+              </div>
+
+              <div class="field full">
+                <label for="internalNotes">Internal Notes</label>
+                <textarea id="internalNotes" placeholder="Rep-only notes, strategy, next move..."></textarea>
+              </div>
+            </div>
+
+            <div class="form-actions">
+              <button class="btn primary" type="submit">➕ Save Customer</button>
+              <button class="btn" type="button" id="clearFormBtn">Clear Form</button>
+            </div>
+          </form>
+        </div>
+      </aside>
+
+      <section class="panel" id="leads">
+        <div class="panel-header">
+          <h2>Lead Pipeline</h2>
+          <span class="badge" id="visibleCountBadge">0 visible</span>
+        </div>
+
+        <div class="panel-body">
+          <section class="pipeline" id="pipelineCounts"></section>
+
+          <section id="actions">
+            <h2 style="margin: 0 0 10px; font-size: 1.05rem; letter-spacing: -0.03em;">Disposition Action Area</h2>
+            <div class="dispositions" id="dispositionArea"></div>
+          </section>
+
+          <div class="controls">
+            <input id="searchInput" placeholder="Search name, phone, address, notes, borough, agent..." />
+            <select id="statusFilter">
+              <option value="">All Statuses</option>
+            </select>
+            <select id="pipelineFilter">
+              <option value="">All Pipeline Stages</option>
+            </select>
+            <select id="solarFilter">
+              <option value="">All Solar Statuses</option>
+            </select>
+            <select id="heatingFilter">
+              <option value="">All Heating Types</option>
+            </select>
+          </div>
+
+          <div class="quick-filters">
+            <span class="chip" data-quick="today">📅 Appointments Today</span>
+            <span class="chip" data-quick="due">⏰ Follow-Ups Due</span>
+            <span class="chip" data-quick="overdue">🚨 Overdue</span>
+            <span class="chip" data-quick="hot">🔥 Hot Leads</span>
+            <span class="chip" data-quick="won">✅ Closed Won</span>
+            <span class="chip" data-quick="lost">❌ Closed Lost</span>
+          </div>
+
+          <div class="lead-list" id="leadList"></div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <div class="drawer-backdrop" id="drawerBackdrop"></div>
+  <aside class="drawer" id="leadDrawer">
+    <div class="drawer-inner" id="drawerContent"></div>
+  </aside>
+
+  <div class="toast-wrap" id="toastWrap"></div>
+
+  <nav class="bottom-nav">
+    <a href="#accounts">➕<br />Add</a>
+    <a href="#actions">⚡<br />Actions</a>
+    <a href="#leads">📋<br />Leads</a>
+    <a href="#dashboard">📊<br />Stats</a>
+  </nav>
+
+  <script>
+    const APP_KEY = "m2_crm_v3_premium_state";
+    const APP_VERSION = "M2 CRM v3.0 Premium";
+
+    const pipelineStages = [
+      "New Lead",
+      "Contacted",
+      "Appointment Set",
+      "Estimate Completed",
+      "Proposal Sent",
+      "Closed Won",
+      "Closed Lost",
+      "Follow Up Later",
+      "Not Qualified"
+    ];
+
+    const leadStatuses = [
+      "New",
+      "Hot",
+      "Warm",
+      "Cold",
+      "Appointment Set",
+      "Follow Up",
+      "Closed Won",
+      "Closed Lost",
+      "Do Not Knock",
+      "Not Qualified"
+    ];
+
+    const solarStatuses = [
+      "Unknown",
+      "No Solar",
+      "Has Solar",
+      "Interested in Solar",
+      "Not Interested",
+      "Already Under Contract",
+      "Needs Roof Check",
+      "Needs Bill Review"
+    ];
+
+    const heatingTypes = [
+      "Unknown",
+      "Gas Heating",
+      "Oil Heating",
+      "Electric Heating",
+      "No Boiler"
+    ];
+
+    const dispositions = [
+      ["🏚️", "Not Home"],
+      ["🚫", "Not Interested"],
+      ["📞", "Callback"],
+      ["📅", "Appointment Set"],
+      ["📩", "Bill Requested"],
+      ["🧾", "Bill Received"],
+      ["⏰", "Needs Follow-Up"],
+      ["✅", "Closed Won"],
+      ["❌", "Closed Lost"],
+      ["⛔", "Do Not Knock"],
+      ["🔑", "Renter"],
+      ["☀️", "Already Has Solar"],
+      ["🛠️", "Needs HVAC"],
+      ["❄️", "Needs Mini Split"],
+      ["🔥", "Gas Heating"],
+      ["🛢️", "Oil Heating"]
+    ];
+
+    let state = {
+      version: APP_VERSION,
+      lastSaved: null,
+      selectedLeadId: null,
+      quickFilter: "",
+      leads: []
+    };
+
+    const $ = (id) => document.getElementById(id);
+
+    const todayStr = () => new Date().toISOString().slice(0, 10);
+
+    const nowStamp = () => new Date().toLocaleString();
+
+    const escapeHtml = (value) => String(value ?? "").replace(/[&<>"']/g, (char) => ({
+      "&": "&amp;",
+      "<": "&lt;",
+      ">": "&gt;",
+      '"': "&quot;",
+      "'": "&#039;"
+    }[char]));
+
+    const normalize = (value) => String(value ?? "").trim();
+
+    function uid() {
+      return "lead_" + Date.now().toString(36) + "_" + Math.random().toString(36).slice(2, 8);
+    }
+
+    function toast(message) {
+      const wrap = $("toastWrap");
+      const el = document.createElement("div");
+      el.className = "toast";
+      el.textContent = message;
+      wrap.appendChild(el);
+      setTimeout(() => {
+        el.style.opacity = "0";
+        el.style.transform = "translateY(8px)";
+        setTimeout(() => el.remove(), 220);
+      }, 2600);
+    }
+
+    function saveState(showToast = false) {
+      try {
+        state.lastSaved = new Date().toISOString();
+        localStorage.setItem(APP_KEY, JSON.stringify(state));
+        renderLastSaved();
+        if (showToast) toast("Saved successfully.");
+      } catch (error) {
+        console.error(error);
+        toast("Storage error: backup your leads now.");
+      }
+    }
+
+    function loadState() {
+      try {
+        const raw = localStorage.getItem(APP_KEY);
+        if (!raw) {
+          seedDemoData();
+          saveState();
+          return;
+        }
+
+        const parsed = JSON.parse(raw);
+        if (!parsed || !Array.isArray(parsed.leads)) throw new Error("Invalid CRM backup");
+
+        state = {
+          version: parsed.version || APP_VERSION,
+          lastSaved: parsed.lastSaved || null,
+          selectedLeadId: parsed.selectedLeadId || null,
+          quickFilter: "",
+          leads: parsed.leads
+        };
+      } catch (error) {
+        console.error(error);
+        const bad = localStorage.getItem(APP_KEY);
+        if (bad) localStorage.setItem(APP_KEY + "_corrupted_" + Date.now(), bad);
+        state = { version: APP_VERSION, lastSaved: null, selectedLeadId: null, quickFilter: "", leads: [] };
+        toast("Recovered from corrupted CRM data. Old data was backed up separately.");
+      }
+    }
+
+    function seedDemoData() {
+      state.leads = [
+        {
+          id: uid(),
+          fullName: "Angela Rivera",
+          phone: "(718) 555-0188",
+          email: "angela@example.com",
+          address: "Queens Village, NY",
+          borough: "Queens",
+          homeownerStatus: "Homeowner",
+          utilityCompany: "Con Edison",
+          averageBill: "285",
+          heatingType: "Gas Heating",
+          boilerStatus: "Old Boiler",
+          solarStatus: "Interested in Solar",
+          hvacInterest: "Interested in Mini Split",
+          rebateInterest: "Very Interested",
+          pipelineStage: "Appointment Set",
+          leadStatus: "Hot",
+          appointmentDate: todayStr(),
+          appointmentTime: "16:00",
+          assignedAgent: "Shaq",
+          lastContactDate: todayStr(),
+          nextFollowUpDate: todayStr(),
+          billFileName: "coned_bill_angela.pdf",
+          notes: "Wants lower bill and better comfort upstairs. Asked about zero down options.",
+          internalNotes: "Lead with rebate + monthly savings. Bring mini split first, solar after.",
+          history: [{ action: "Demo Lead Created", timestamp: nowStamp() }],
+          createdAt: new Date().toISOString(),
+          updatedAt: new Date().toISOString()
+        },
+        {
+          id: uid(),
+          fullName: "Michael Brown",
+          phone: "(917) 555-0199",
+          email: "",
+          address: "Elmont, NY",
+          borough: "Long Island",
+          homeownerStatus: "Homeowner",
+          utilityCompany: "PSEG",
+          averageBill: "190",
+          heatingType: "Oil Heating",
+          boilerStatus: "Has Boiler",
+          solarStatus: "Needs Roof Check",
+          hvacInterest: "Needs HVAC",
+          rebateInterest: "Interested",
+          pipelineStage: "Follow Up Later",
+          leadStatus: "Warm",
+          appointmentDate: "",
+          appointmentTime: "",
+          assignedAgent: "Shaq",
+          lastContactDate: todayStr(),
+          nextFollowUpDate: todayStr(),
+          billFileName: "",
+          notes: "Interested but wants wife present.",
+          internalNotes: "Follow up after 6pm.",
+          history: [{ action: "Demo Lead Created", timestamp: nowStamp() }],
+          createdAt: new Date().toISOString(),
+          updatedAt: new Date().toISOString()
+        }
+      ];
+    }
+
+    function scoreLead(lead) {
+      let score = 0;
+
+      if (lead.homeownerStatus === "Homeowner" || lead.homeownerStatus === "Decision Maker") score += 25;
+      if (Number(lead.averageBill || 0) > 200) score += 20;
+      if (lead.solarStatus === "Interested in Solar" || lead.solarStatus === "Needs Roof Check" || lead.solarStatus === "Needs Bill Review") score += 20;
+      if (["Interested in HVAC", "Interested in Mini Split", "Needs HVAC", "Needs Mini Split"].includes(lead.hvacInterest)) score += 20;
+      if (lead.heatingType === "Gas Heating" || lead.heatingType === "Oil Heating") score += 15;
+      if (lead.pipelineStage === "Appointment Set" || lead.leadStatus === "Appointment Set") score += 15;
+      if (lead.billFileName) score += 10;
+      if (lead.homeownerStatus === "Renter") score -= 25;
+      if (lead.solarStatus === "Not Interested" || lead.hvacInterest === "Not Interested" || lead.leadStatus === "Closed Lost") score -= 30;
+      if (lead.leadStatus === "Do Not Knock") score -= 50;
+
+      return Math.max(0, Math.min(100, score));
+    }
+
+    function scoreLabel(score) {
+      if (score >= 70) return "Hot Lead";
+      if (score >= 40) return "Warm Lead";
+      return "Cold Lead";
+    }
+
+    function scoreBadgeClass(score) {
+      if (score >= 70) return "good";
+      if (score >= 40) return "warn";
+      return "";
+    }
+
+    function isToday(dateStr) {
+      return dateStr === todayStr();
+    }
+
+    function isOverdue(dateStr) {
+      return Boolean(dateStr && dateStr < todayStr());
+    }
+
+    function populateFilters() {
+      const statusFilter = $("statusFilter");
+      const pipelineFilter = $("pipelineFilter");
+      const solarFilter = $("solarFilter");
+      const heatingFilter = $("heatingFilter");
+
+      leadStatuses.forEach(item => statusFilter.insertAdjacentHTML("beforeend", `<option value="${escapeHtml(item)}">${escapeHtml(item)}</option>`));
+      pipelineStages.forEach(item => pipelineFilter.insertAdjacentHTML("beforeend", `<option value="${escapeHtml(item)}">${escapeHtml(item)}</option>`));
+      solarStatuses.forEach(item => solarFilter.insertAdjacentHTML("beforeend", `<option value="${escapeHtml(item)}">${escapeHtml(item)}</option>`));
+      heatingTypes.forEach(item => heatingFilter.insertAdjacentHTML("beforeend", `<option value="${escapeHtml(item)}">${escapeHtml(item)}</option>`));
+    }
+
+    function renderLastSaved() {
+      const badge = $("lastSavedBadge");
+      if (!state.lastSaved) {
+        badge.textContent = "Last saved: never";
+        return;
+      }
+      badge.textContent = "Last saved: " + new Date(state.lastSaved).toLocaleString();
+    }
+
+    function getVisibleLeads() {
+      const q = $("searchInput").value.toLowerCase().trim();
+      const status = $("statusFilter").value;
+      const pipe = $("pipelineFilter").value;
+      const solar = $("solarFilter").value;
+      const heating = $("heatingFilter").value;
+
+      return state.leads.filter((lead) => {
+        const haystack = [
+          lead.fullName,
+          lead.phone,
+          lead.email,
+          lead.address,
+          lead.borough,
+          lead.notes,
+          lead.internalNotes,
+          lead.assignedAgent
+        ].join(" ").toLowerCase();
+
+        if (q && !haystack.includes(q)) return false;
+        if (status && lead.leadStatus !== status) return false;
+        if (pipe && lead.pipelineStage !== pipe) return false;
+        if (solar && lead.solarStatus !== solar) return false;
+        if (heating && lead.heatingType !== heating) return false;
+
+        const score = scoreLead(lead);
+
+        if (state.quickFilter === "today" && !isToday(lead.appointmentDate)) return false;
+        if (state.quickFilter === "due" && !isToday(lead.nextFollowUpDate)) return false;
+        if (state.quickFilter === "overdue" && !isOverdue(lead.nextFollowUpDate)) return false;
+        if (state.quickFilter === "hot" && score < 70) return false;
+        if (state.quickFilter === "won" && lead.pipelineStage !== "Closed Won" && lead.leadStatus !== "Closed Won") return false;
+        if (state.quickFilter === "lost" && lead.pipelineStage !== "Closed Lost" && lead.leadStatus !== "Closed Lost") return false;
+
+        return true;
+      }).sort((a, b) => scoreLead(b) - scoreLead(a));
+    }
+
+    function renderDashboard() {
+      const total = state.leads.length;
+      const hot = state.leads.filter(l => scoreLead(l) >= 70).length;
+      const apptsToday = state.leads.filter(l => isToday(l.appointmentDate)).length;
+      const followDue = state.leads.filter(l => l.nextFollowUpDate && l.nextFollowUpDate <= todayStr()).length;
+      const won = state.leads.filter(l => l.pipelineStage === "Closed Won" || l.leadStatus === "Closed Won").length;
+      const conversion = total ? Math.round((won / total) * 100) : 0;
+      const revenue = won * 8500;
+
+      const stats = [
+        ["Total Leads", total],
+        ["Hot Leads", hot],
+        ["Appointments Today", apptsToday],
+        ["Follow Ups Due", followDue],
+        ["Closed Won", won],
+        ["Conversion Rate", conversion + "%"],
+        ["Estimated Revenue", "$" + revenue.toLocaleString()]
+      ];
+
+      $("dashboard").innerHTML = stats.map(([label, value]) => `
+        <article class="stat">
+          <div class="label">${escapeHtml(label)}</div>
+          <div class="value">${escapeHtml(value)}</div>
+        </article>
+      `).join("");
+    }
+
+    function renderPipelineCounts() {
+      $("pipelineCounts").innerHTML = pipelineStages.map(stage => {
+        const count = state.leads.filter(l => l.pipelineStage === stage).length;
+        return `
+          <div class="pipe">
+            <span>${escapeHtml(stage)}</span>
+            <strong>${count}</strong>
+          </div>
+        `;
+      }).join("");
+    }
+
+    function renderDispositions() {
+      $("dispositionArea").innerHTML = dispositions.map(([icon, text]) => `
+        <button class="disp-btn" type="button" data-disposition="${escapeHtml(text)}">
+          <span class="icon">${icon}</span>
+          <span class="txt">${escapeHtml(text)}</span>
+        </button>
+      `).join("");
+    }
+
+    function renderLeadList() {
+      const leads = getVisibleLeads();
+      $("visibleCountBadge").textContent = `${leads.length} visible`;
+
+      if (!leads.length) {
+        $("leadList").innerHTML = `<div class="empty">No leads match this view. Add a customer or clear your filters.</div>`;
+        return;
+      }
+
+      $("leadList").innerHTML = leads.map(lead => {
+        const score = scoreLead(lead);
+        const scoreClass = scoreBadgeClass(score);
+        const due = isToday(lead.nextFollowUpDate);
+        const overdue = isOverdue(lead.nextFollowUpDate);
+        const apptToday = isToday(lead.appointmentDate);
+
+        return `
+          <article class="lead-card" data-lead-id="${escapeHtml(lead.id)}">
+            <div class="lead-top">
+              <div>
+                <h3>${escapeHtml(lead.fullName || "Unnamed Lead")}</h3>
+                <div class="lead-meta">
+                  ${escapeHtml(lead.phone || "No phone")} • ${escapeHtml(lead.borough || "No city")}<br />
+                  ${escapeHtml(lead.address || "No address")}
+                </div>
+              </div>
+              <div class="score">
+                <strong>${score}</strong>
+                <span>${escapeHtml(scoreLabel(score))}</span>
+              </div>
+            </div>
+
+            <div class="badges">
+              <span class="badge ${scoreClass}">${escapeHtml(lead.leadStatus || "New")}</span>
+              <span class="badge">${escapeHtml(lead.pipelineStage || "New Lead")}</span>
+              <span class="badge">${escapeHtml(lead.solarStatus || "Unknown")}</span>
+              <span class="badge">${escapeHtml(lead.heatingType || "Unknown")}</span>
+              ${lead.billFileName ? `<span class="badge good">Bill Uploaded</span>` : ""}
+              ${apptToday ? `<span class="badge good">Appointment Today</span>` : ""}
+              ${due ? `<span class="badge warn">Follow-Up Due</span>` : ""}
+              ${overdue ? `<span class="badge bad">Overdue</span>` : ""}
+            </div>
+
+            <div class="card-actions">
+              <button class="btn small primary" type="button" data-action="select" data-id="${escapeHtml(lead.id)}">Select</button>
+              <button class="btn small" type="button" data-action="view" data-id="${escapeHtml(lead.id)}">View</button>
+              <button class="btn small" type="button" data-action="edit" data-id="${escapeHtml(lead.id)}">Edit</button>
+              <button class="btn small bad" type="button" data-action="delete" data-id="${escapeHtml(lead.id)}">Delete</button>
+            </div>
+          </article>
+        `;
+      }).join("");
+    }
+
+    function renderAll() {
+      renderDashboard();
+      renderPipelineCounts();
+      renderDispositions();
+      renderLeadList();
+      renderLastSaved();
+      renderQuickChips();
+    }
+
+    function renderQuickChips() {
+      document.querySelectorAll(".chip[data-quick]").forEach(chip => {
+        chip.classList.toggle("active", chip.dataset.quick === state.quickFilter);
+      });
+    }
+
+    function getFormData() {
+      const existing = state.leads.find(l => l.id === $("leadId").value);
+      const file = $("billUpload").files && $("billUpload").files[0];
+
+      return {
+        id: $("leadId").value || uid(),
+        fullName: normalize($("fullName").value),
+        phone: normalize($("phone").value),
+        email: normalize($("email").value),
+        address: normalize($("address").value),
+        borough: normalize($("borough").value),
+        homeownerStatus: $("homeownerStatus").value,
+        utilityCompany: normalize($("utilityCompany").value),
+        averageBill: normalize($("averageBill").value),
+        heatingType: $("heatingType").value,
+        boilerStatus: $("boilerStatus").value,
+        solarStatus: $("solarStatus").value,
+        hvacInterest: $("hvacInterest").value,
+        rebateInterest: $("rebateInterest").value,
+        pipelineStage: $("pipelineStage").value,
+        leadStatus: $("leadStatus").value,
+        appointmentDate: $("appointmentDate").value,
+        appointmentTime: $("appointmentTime").value,
+        assignedAgent: normalize($("assignedAgent").value),
+        lastContactDate: $("lastContactDate").value,
+        nextFollowUpDate: $("nextFollowUpDate").value,
+        billFileName: file ? file.name : (existing?.billFileName || ""),
+        notes: normalize($("notes").value),
+        internalNotes: normalize($("internalNotes").value),
+        history: existing?.history || [],
+        createdAt: existing?.createdAt || new Date().toISOString(),
+        updatedAt: new Date().toISOString()
+      };
+    }
+
+    function clearForm() {
+      $("leadForm").reset();
+      $("leadId").value = "";
+      $("billUpload").value = "";
+    }
+
+    function fillForm(lead) {
+      $("leadId").value = lead.id || "";
+      $("fullName").value = lead.fullName || "";
+      $("phone").value = lead.phone || "";
+      $("email").value = lead.email || "";
+      $("address").value = lead.address || "";
+      $("borough").value = lead.borough || "";
+      $("homeownerStatus").value = lead.homeownerStatus || "Unknown";
+      $("utilityCompany").value = lead.utilityCompany || "";
+      $("averageBill").value = lead.averageBill || "";
+      $("heatingType").value = lead.heatingType || "Unknown";
+      $("boilerStatus").value = lead.boilerStatus || "Unknown";
+      $("solarStatus").value = lead.solarStatus || "Unknown";
+      $("hvacInterest").value = lead.hvacInterest || "Unknown";
+      $("rebateInterest").value = lead.rebateInterest || "Unknown";
+      $("pipelineStage").value = lead.pipelineStage || "New Lead";
+      $("leadStatus").value = lead.leadStatus || "New";
+      $("appointmentDate").value = lead.appointmentDate || "";
+      $("appointmentTime").value = lead.appointmentTime || "";
+      $("assignedAgent").value = lead.assignedAgent || "";
+      $("lastContactDate").value = lead.lastContactDate || "";
+      $("nextFollowUpDate").value = lead.nextFollowUpDate || "";
+      $("notes").value = lead.notes || "";
+      $("internalNotes").value = lead.internalNotes || "";
+      $("billUpload").value = "";
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+
+    function upsertLead(lead) {
+      const index = state.leads.findIndex(l => l.id === lead.id);
+      const action = index >= 0 ? "Customer Updated" : "Customer Created";
+      lead.history = lead.history || [];
+      lead.history.unshift({ action, timestamp: nowStamp() });
+
+      if (index >= 0) state.leads[index] = lead;
+      else state.leads.unshift(lead);
+
+      state.selectedLeadId = lead.id;
+      saveState();
+      renderAll();
+      toast(action);
+    }
+
+    function selectedLead() {
+      return state.leads.find(l => l.id === state.selectedLeadId) || state.leads[0] || null;
+    }
+
+    function applyDisposition(label) {
+      const lead = selectedLead();
+      if (!lead) {
+        toast("Select a lead first.");
+        return;
+      }
+
+      lead.history = lead.history || [];
+      lead.history.unshift({ action: label, timestamp: nowStamp() });
+      lead.updatedAt = new Date().toISOString();
+      lead.lastContactDate = todayStr();
+
+      if (label === "Not Interested") {
+        lead.leadStatus = "Cold";
+      } else if (label === "Appointment Set") {
+        lead.leadStatus = "Appointment Set";
+        lead.pipelineStage = "Appointment Set";
+      } else if (label === "Callback" || label === "Needs Follow-Up") {
+        lead.leadStatus = "Follow Up";
+        lead.pipelineStage = "Follow Up Later";
+        if (!lead.nextFollowUpDate) lead.nextFollowUpDate = todayStr();
+      } else if (label === "Closed Won") {
+        lead.leadStatus = "Closed Won";
+        lead.pipelineStage = "Closed Won";
+      } else if (label === "Closed Lost") {
+        lead.leadStatus = "Closed Lost";
+        lead.pipelineStage = "Closed Lost";
+      } else if (label === "Do Not Knock") {
+        lead.leadStatus = "Do Not Knock";
+        lead.pipelineStage = "Not Qualified";
+      } else if (label === "Renter") {
+        lead.homeownerStatus = "Renter";
+        lead.leadStatus = "Not Qualified";
+        lead.pipelineStage = "Not Qualified";
+      } else if (label === "Already Has Solar") {
+        lead.solarStatus = "Has Solar";
+      } else if (label === "Needs HVAC") {
+        lead.hvacInterest = "Needs HVAC";
+      } else if (label === "Needs Mini Split") {
+        lead.hvacInterest = "Needs Mini Split";
+      } else if (label === "Gas Heating") {
+        lead.heatingType = "Gas Heating";
+      } else if (label === "Oil Heating") {
+        lead.heatingType = "Oil Heating";
+      } else if (label === "Bill Received") {
+        lead.solarStatus = lead.solarStatus === "Unknown" ? "Needs Bill Review" : lead.solarStatus;
+      }
+
+      saveState();
+      renderAll();
+      toast(`${label} added to ${lead.fullName || "lead"}.`);
+    }
+
+    function deleteLead(id) {
+      const lead = state.leads.find(l => l.id === id);
+      if (!lead) return;
+      if (!confirm(`Delete ${lead.fullName || "this lead"}?`)) return;
+
+      state.leads = state.leads.filter(l => l.id !== id);
+      if (state.selectedLeadId === id) state.selectedLeadId = null;
+      saveState();
+      renderAll();
+      toast("Lead deleted.");
+    }
+
+    function openDrawer(lead) {
+      const score = scoreLead(lead);
+      $("drawerContent").innerHTML = `
+        <div class="detail-title">
+          <div>
+            <h2>${escapeHtml(lead.fullName || "Unnamed Lead")}</h2>
+            <p style="margin: 6px 0 0; color: var(--muted);">${escapeHtml(scoreLabel(score))} • Score ${score}</p>
+          </div>
+          <button class="btn small" type="button" id="closeDrawerBtn">Close</button>
+        </div>
+
+        <div class="detail-grid">
+          ${detailBox("Phone", lead.phone)}
+          ${detailBox("Email", lead.email)}
+          ${detailBox("Address", lead.address)}
+          ${detailBox("Borough / City", lead.borough)}
+          ${detailBox("Homeowner", lead.homeownerStatus)}
+          ${detailBox("Utility", lead.utilityCompany)}
+          ${detailBox("Average Bill", lead.averageBill ? "$" + lead.averageBill : "")}
+          ${detailBox("Heating Type", lead.heatingType)}
+          ${detailBox("Boiler Status", lead.boilerStatus)}
+          ${detailBox("Solar Status", lead.solarStatus)}
+          ${detailBox("HVAC Interest", lead.hvacInterest)}
+          ${detailBox("Rebate Interest", lead.rebateInterest)}
+          ${detailBox("Pipeline", lead.pipelineStage)}
+          ${detailBox("Lead Status", lead.leadStatus)}
+          ${detailBox("Appointment", lead.appointmentDate ? `${lead.appointmentDate} ${lead.appointmentTime || ""}` : "")}
+          ${detailBox("Next Follow-Up", lead.nextFollowUpDate)}
+          ${detailBox("Assigned Agent", lead.assignedAgent)}
+          ${detailBox("Utility Bill", lead.billFileName || "No file selected")}
+        </div>
+
+        <div class="detail-box" style="margin-top: 12px;">
+          <span>Main Notes</span>
+          <strong>${escapeHtml(lead.notes || "No notes yet.")}</strong>
+        </div>
+
+        <div class="detail-box" style="margin-top: 12px;">
+          <span>Internal Notes</span>
+          <strong>${escapeHtml(lead.internalNotes || "No internal notes yet.")}</strong>
+        </div>
+
+        <div class="detail-box" style="margin-top: 12px;">
+          <span>Disposition History</span>
+          <div class="timeline">
+            ${(lead.history || []).length ? lead.history.map(item => `
+              <div class="timeline-item">
+                ${escapeHtml(item.action)}
+                <small>${escapeHtml(item.timestamp)}</small>
+              </div>
+            `).join("") : `<div style="color: var(--muted);">No history yet.</div>`}
+          </div>
+        </div>
+      `;
+
+      $("drawerBackdrop").classList.add("show");
+      $("leadDrawer").classList.add("show");
+      $("closeDrawerBtn").addEventListener("click", closeDrawer);
+    }
+
+    function detailBox(label, value) {
+      return `
+        <div class="detail-box">
+          <span>${escapeHtml(label)}</span>
+          <strong>${escapeHtml(value || "—")}</strong>
+        </div>
+      `;
+    }
+
+    function closeDrawer() {
+      $("drawerBackdrop").classList.remove("show");
+      $("leadDrawer").classList.remove("show");
+    }
+
+    function exportJson() {
+      const blob = new Blob([JSON.stringify(state, null, 2)], { type: "application/json" });
+      downloadBlob(blob, `m2-crm-backup-${todayStr()}.json`);
+      toast("Backup exported.");
+    }
+
+    function importJson(file) {
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = () => {
+        try {
+          const imported = JSON.parse(reader.result);
+          if (!imported || !Array.isArray(imported.leads)) throw new Error("Invalid backup");
+          state = {
+            version: APP_VERSION,
+            lastSaved: new Date().toISOString(),
+            selectedLeadId: null,
+            quickFilter: "",
+            leads: imported.leads
+          };
+          saveState();
+          renderAll();
+          toast("Backup imported.");
+        } catch (error) {
+          console.error(error);
+          toast("Could not import that backup file.");
+        }
+      };
+      reader.readAsText(file);
+    }
+
+    function exportCsv() {
+      const headers = [
+        "Full Name", "Phone", "Email", "Address", "Borough", "Homeowner Status",
+        "Utility Company", "Average Bill", "Heating Type", "Boiler Status",
+        "Solar Status", "HVAC Interest", "Rebate Interest", "Pipeline Stage",
+        "Lead Status", "Appointment Date", "Appointment Time", "Assigned Agent",
+        "Last Contact Date", "Next Follow-Up Date", "Utility Bill File",
+        "Lead Score", "Notes", "Internal Notes", "Created At", "Updated At"
+      ];
+
+      const rows = state.leads.map(lead => [
+        lead.fullName, lead.phone, lead.email, lead.address, lead.borough, lead.homeownerStatus,
+        lead.utilityCompany, lead.averageBill, lead.heatingType, lead.boilerStatus,
+        lead.solarStatus, lead.hvacInterest, lead.rebateInterest, lead.pipelineStage,
+        lead.leadStatus, lead.appointmentDate, lead.appointmentTime, lead.assignedAgent,
+        lead.lastContactDate, lead.nextFollowUpDate, lead.billFileName,
+        scoreLead(lead), lead.notes, lead.internalNotes, lead.createdAt, lead.updatedAt
+      ]);
+
+      const csv = [headers, ...rows]
+        .map(row => row.map(cell => `"${String(cell ?? "").replace(/"/g, '""')}"`).join(","))
+        .join("\n");
+
+      const blob = new Blob([csv], { type: "text/csv" });
+      downloadBlob(blob, `m2-crm-leads-${todayStr()}.csv`);
+      toast("CSV exported.");
+    }
+
+    function downloadBlob(blob, filename) {
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(url);
+    }
+
+    function bindEvents() {
+      $("leadForm").addEventListener("submit", (event) => {
+        event.preventDefault();
+        const lead = getFormData();
+        if (!lead.fullName) {
+          toast("Full name is required.");
+          return;
+        }
+        upsertLead(lead);
+        clearForm();
+      });
+
+      $("clearFormBtn").addEventListener("click", clearForm);
+      $("saveNowBtn").addEventListener("click", () => saveState(true));
+      $("exportJsonBtn").addEventListener("click", exportJson);
+      $("exportCsvBtn").addEventListener("click", exportCsv);
+      $("importJsonInput").addEventListener("change", (event) => importJson(event.target.files[0]));
+
+      $("resetBtn").addEventListener("click", () => {
+        if (!confirm("Reset demo data? Export a backup first if you need your current leads.")) return;
+        localStorage.removeItem(APP_KEY);
+        state = { version: APP_VERSION, lastSaved: null, selectedLeadId: null, quickFilter: "", leads: [] };
+        seedDemoData();
+        saveState();
+        renderAll();
+        toast("Demo reset complete.");
+      });
+
+      ["searchInput", "statusFilter", "pipelineFilter", "solarFilter", "heatingFilter"].forEach(id => {
+        $(id).addEventListener("input", renderLeadList);
+        $(id).addEventListener("change", renderLeadList);
+      });
+
+      document.addEventListener("click", (event) => {
+        const disp = event.target.closest("[data-disposition]");
+        if (disp) {
+          applyDisposition(disp.dataset.disposition);
+          return;
+        }
+
+        const actionBtn = event.target.closest("[data-action]");
+        if (actionBtn) {
+          const id = actionBtn.dataset.id;
+          const lead = state.leads.find(l => l.id === id);
+          if (!lead) return;
+
+          if (actionBtn.dataset.action === "select") {
+            state.selectedLeadId = id;
+            saveState();
+            toast(`${lead.fullName || "Lead"} selected.`);
+          }
+
+          if (actionBtn.dataset.action === "view") {
+            state.selectedLeadId = id;
+            saveState();
+            openDrawer(lead);
+          }
+
+          if (actionBtn.dataset.action === "edit") {
+            state.selectedLeadId = id;
+            fillForm(lead);
+            saveState();
+          }
+
+          if (actionBtn.dataset.action === "delete") {
+            deleteLead(id);
+          }
+        }
+
+        const chip = event.target.closest(".chip[data-quick]");
+        if (chip) {
+          state.quickFilter = state.quickFilter === chip.dataset.quick ? "" : chip.dataset.quick;
+          renderQuickChips();
+          renderLeadList();
+        }
+      });
+
+      $("drawerBackdrop").addEventListener("click", closeDrawer);
+
+      window.addEventListener("beforeunload", () => saveState(false));
+    }
+
+    function init() {
+      populateFilters();
+      loadState();
+      bindEvents();
+      renderAll();
+      console.log(`${APP_VERSION} loaded successfully.`);
+    }
+
+    init();
+  </script>
+</body>
+</html>
